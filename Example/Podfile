@@ -1,0 +1,11 @@
+source 'https://github.com/CocoaPods/Specs.git'
+
+target 'SIFontManager', :exclusive => true do
+  pod "SIFontManager", :path => "../"
+end
+
+target 'Tests', :exclusive => true do
+  pod "SIFontManager", :path => "../"
+
+  pod 'FBSnapshotTestCase'
+end
