@@ -6,6 +6,4 @@ end
 
 target 'Tests', :exclusive => true do
   pod "SIFontManager", :path => "../"
-
-  pod 'FBSnapshotTestCase'
 end

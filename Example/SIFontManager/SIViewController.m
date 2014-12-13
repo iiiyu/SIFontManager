@@ -10,6 +10,8 @@
 
 @interface SIViewController ()
 
+@property (weak, nonatomic) IBOutlet UITableViewCell *fontStyleCell;
+
 @end
 
 @implementation SIViewController
@@ -24,6 +26,30 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    [self.tableView deselectRowAtIndexPath:[self.tableView indexPathForSelectedRow] animated:YES];
+}
+
+- (BOOL)tableView:(UITableView *)tableView shouldHighlightRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if ([cell isEqual:self.fontStyleCell]) {
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    UITableViewCell *cell = [tableView cellForRowAtIndexPath:indexPath];
+    if ([cell isEqual:self.fontStyleCell]) {
+        NSLog(@"hello");
+    }
 }
 
 @end

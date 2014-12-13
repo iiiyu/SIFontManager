@@ -1,0 +1,14 @@
+PODS:
+  - SIFontManager (0.1.0)
+
+DEPENDENCIES:
+  - SIFontManager (from `../`)
+
+EXTERNAL SOURCES:
+  SIFontManager:
+    :path: ../
+
+SPEC CHECKSUMS:
+  SIFontManager: 05e86d20152b78c1ab4c633682d29a0bdd8eb740
+
+COCOAPODS: 0.35.0
