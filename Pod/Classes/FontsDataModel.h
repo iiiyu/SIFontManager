@@ -34,7 +34,8 @@ typedef NS_ENUM(NSUInteger, FontSize) {
 
 - (NSString *)fontNameWithIndexPath:(NSIndexPath *)indexPath;
 
-- (NSString *)fontInfoImageNameWithIndexPath:(NSIndexPath *)indexPath;
+//- (NSString *)fontInfoImageNameWithIndexPath:(NSIndexPath *)indexPath;
+- (UIImage *)fontInfoImageWithIndexPath:(NSIndexPath *)indexPath;
 
 - (NSString *)contentFontPostScriptNameWithIndexPath:(NSIndexPath *)indexPath;
 

@@ -25,6 +25,7 @@ NSString *const kFontTypeKey = @"FontType";
 @interface FontsDataModel()
 
 @property (nonatomic, strong) NSDictionary *originalData;
+@property (nonatomic, strong) NSBundle *fontsDataBundle;
 
 @end
 
@@ -40,6 +41,7 @@ NSString *const kFontTypeKey = @"FontType";
                                                  selector:@selector(didReceiveMemoryWarning:)
                                                      name:UIApplicationDidReceiveMemoryWarningNotification
                                                    object:[UIApplication sharedApplication]];
+        [self setupBundel];
         [self setupPlist];
     }
     return self;
@@ -48,6 +50,12 @@ NSString *const kFontTypeKey = @"FontType";
 - (void)didReceiveMemoryWarning:(NSNotification *)notification
 {
     _originalData = nil;
+}
+
+- (void)setupBundel
+{
+    NSURL *bundleURL = [[NSBundle mainBundle] URLForResource:kFontManagerBundleName withExtension:@"bundle"];
+    self.fontsDataBundle = [NSBundle bundleWithURL:bundleURL];
 }
 
 
@@ -67,9 +75,8 @@ NSString *const kFontTypeKey = @"FontType";
     
     NSString *fontsDataPlistFilePath = [applicationSupportPath stringByAppendingPathComponent:kFontsDataPlistName];
     if (![fileManager fileExistsAtPath:fontsDataPlistFilePath]) {
-        NSURL *bundleURL = [[NSBundle mainBundle] URLForResource:kFontManagerBundleName withExtension:@"bundle"];
-        NSBundle *bundle = [NSBundle bundleWithURL:bundleURL];
-        [fileManager copyItemAtPath:[bundle pathForResource:kFontsDataPlistName ofType:nil] toPath:fontsDataPlistFilePath error:&error];
+
+        [fileManager copyItemAtPath:[self.fontsDataBundle pathForResource:kFontsDataPlistName ofType:nil] toPath:fontsDataPlistFilePath error:&error];
         if (error) {
             NSLog(@"error:%@",error);
         }
@@ -135,7 +142,7 @@ NSString *const kFontTypeKey = @"FontType";
 - (NSUInteger)rowCountWithSection:(NSUInteger)section
 {
     NSDictionary *fontInfosDict = ((NSArray *)self.originalData[kFontsKey])[section];
-    return ((NSArray *)fontInfosDict[@"FontsDataModel"]).count;
+    return ((NSArray *)fontInfosDict[kFontInfoKey]).count;
 }
 
 - (NSDictionary *)fontInfoWithIndexPath:(NSIndexPath *)indexPath
@@ -167,6 +174,18 @@ NSString *const kFontTypeKey = @"FontType";
 {
     NSDictionary *dict = [self fontInfoWithIndexPath:indexPath];
     return dict[kImageNameKey];
+}
+
+- (UIImage *)fontInfoImageWithIndexPath:(NSIndexPath *)indexPath
+{
+    NSDictionary *dict = [self fontInfoWithIndexPath:indexPath];
+    NSString *imageName = dict[kImageNameKey];
+    NSString *imageFilePath = [self.fontsDataBundle pathForResource:imageName ofType:nil];
+    UIImage *image;
+    if ([[NSFileManager defaultManager] fileExistsAtPath:imageFilePath]) {
+        image = [UIImage imageWithContentsOfFile:imageFilePath];
+    }
+    return image;
 }
 
 - (BOOL)fontIsDownloadedWithIndexPath:(NSIndexPath *)indexPath
