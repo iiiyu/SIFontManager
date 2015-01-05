@@ -8,6 +8,7 @@
 
 #import "FontsDataModel.h"
 
+NSString *const kFontManagerBundleName = @"SIFontManager";
 NSString *const kFontsDataPlistName = @"FontsData.plist";
 NSString *const kFontsKey = @"Fonts";
 NSString *const kFontSizeKey = @"FontSize";
@@ -53,22 +54,24 @@ NSString *const kFontTypeKey = @"FontType";
 - (void)setupPlist
 {
     NSFileManager *fileManager = [[NSFileManager alloc] init];
-    NSString *path = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
+    NSString *applicationSupportPath = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
     BOOL isDirectory = YES;
     NSError *error;
     
-    if (![fileManager fileExistsAtPath:path isDirectory:&isDirectory]) {
-        [fileManager createDirectoryAtPath:path withIntermediateDirectories:YES attributes:nil error:&error];
+    if (![fileManager fileExistsAtPath:applicationSupportPath isDirectory:&isDirectory]) {
+        [fileManager createDirectoryAtPath:applicationSupportPath withIntermediateDirectories:YES attributes:nil error:&error];
         if (error) {
-            DDLogError(@"error:%@",error);
+            NSLog(@"error:%@",error);
         }
     }
     
-    NSString *file = [path stringByAppendingPathComponent:kFontsDataPlistName];
-    if (![fileManager fileExistsAtPath:file]) {
-        [fileManager copyItemAtPath:[[NSBundle mainBundle] pathForResource:kFontsDataPlistName ofType:nil] toPath:file error:&error];
+    NSString *fontsDataPlistFilePath = [applicationSupportPath stringByAppendingPathComponent:kFontsDataPlistName];
+    if (![fileManager fileExistsAtPath:fontsDataPlistFilePath]) {
+        NSURL *bundleURL = [[NSBundle mainBundle] URLForResource:kFontManagerBundleName withExtension:@"bundle"];
+        NSBundle *bundle = [NSBundle bundleWithURL:bundleURL];
+        [fileManager copyItemAtPath:[bundle pathForResource:kFontsDataPlistName ofType:nil] toPath:fontsDataPlistFilePath error:&error];
         if (error) {
-            DDLogError(@"error:%@",error);
+            NSLog(@"error:%@",error);
         }
     }
 }
@@ -93,7 +96,7 @@ NSString *const kFontTypeKey = @"FontType";
         NSString *path = [NSSearchPathForDirectoriesInDomains(NSApplicationSupportDirectory, NSUserDomainMask, YES) lastObject];
         NSString *file = [path stringByAppendingPathComponent:kFontsDataPlistName];
         if (![originalData writeToFile:file atomically:YES]) {
-            DDLogError(@"write file is fail! File Path : %@", file);
+            NSLog(@"write file is fail! File Path : %@", file);
         }
         _originalData = originalData;
     }
